@@ -8,7 +8,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageButton
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -43,16 +42,21 @@ class LoginActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             val user = auth.currentUser
-
                             if (user != null && user.isEmailVerified) {
-                            val editor = sharedPreferences.edit()
-                            editor.putBoolean(KEY_IS_LOGGED_IN, true)
-                            editor.apply()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
+                                // Email is verified, proceed to MainActivity
+                                val editor = sharedPreferences.edit()
+                                editor.putBoolean(KEY_IS_LOGGED_IN, true)
+                                editor.apply()
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            } else {
+                                // Email is not verified
+                                auth.signOut()
+                                Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show()
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(this, "»Login failed.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
