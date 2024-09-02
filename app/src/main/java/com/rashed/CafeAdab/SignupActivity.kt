@@ -36,15 +36,16 @@ class SignupActivity : AppCompatActivity() {
                                 // Send verification email
                                 auth.currentUser?.sendEmailVerification()?.addOnCompleteListener { verificationTask ->
                                     if (verificationTask.isSuccessful) {
-                                        Toast.makeText(this, "Sign-up successful. Please check your email for verification.", Toast.LENGTH_LONG).show()
-                                        startActivity(Intent(this, LoginActivity::class.java))
+                                        Toast.makeText(this, "Verification email sent.", Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(this, VerificationPendingActivity::class.java)
+                                        startActivity(intent)
                                         finish()
                                     } else {
                                         Toast.makeText(this, "Failed to send verification email.", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             }else {
-                                Toast.makeText(this, "Sign-up failed.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Sign up failed.", Toast.LENGTH_SHORT).show()
                             }
                         }
                 } else {
