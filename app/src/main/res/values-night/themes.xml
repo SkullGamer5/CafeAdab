@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CafeAdab" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/green_700</item> <!-- Updated to darker green -->
+        <item name="colorPrimaryVariant">@color/green_900</item> <!-- Updated to even darker green -->
+        <item name="colorOnPrimary">@color/white</item> <!-- Ensures good contrast -->
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/green_500</item> <!-- Updated to green -->
+        <item name="colorSecondaryVariant">@color/green_700</item> <!-- Updated to darker green -->
+        <item name="colorOnSecondary">@color/white</item> <!-- Ensures good contrast -->
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CafeAdab" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+</resources>
