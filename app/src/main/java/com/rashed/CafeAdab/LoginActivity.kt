@@ -9,15 +9,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
     private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
-        private const val PREFS_NAME = "LoginPrefs"
+        private const val PREFS_NAME = "UserPrefs"
         private const val KEY_IS_LOGGED_IN = "isLoggedIn"
+        private const val KEY_USER_FIRST_NAME = "firstName"
+        private const val KEY_USER_LAST_NAME = "lastName"
+        private const val KEY_USER_PHONE = "phoneNumber"
+        private const val KEY_USER_CLASS = "userClass"
+        private const val KEY_USER_MAJOR = "userMajor"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +32,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
-        // Initialize shared preferences
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
@@ -43,19 +50,17 @@ class LoginActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             val user = auth.currentUser
                             if (user != null && user.isEmailVerified) {
-                                // Email is verified, proceed to MainActivity
+                                fetchUserDataFromFirebase(user.uid)
                                 val editor = sharedPreferences.edit()
                                 editor.putBoolean(KEY_IS_LOGGED_IN, true)
                                 editor.apply()
                                 startActivity(Intent(this, MainActivity::class.java))
                                 finish()
                             } else {
-                                // Email is not verified
                                 auth.signOut()
                                 Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show()
                             }
                         } else {
-                            // If sign in fails, display a message to the user.
                             Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -65,8 +70,40 @@ class LoginActivity : AppCompatActivity() {
         }
 
         signupTextView.setOnClickListener {
-            // Navigate to SignupActivity
             startActivity(Intent(this, SignupActivity::class.java))
         }
+    }
+
+    private fun fetchUserDataFromFirebase(userId: String) {
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val firstName = document.getString("firstName")
+                    val lastName = document.getString("lastName")
+                    val phoneNumber = document.getString("phoneNumber")
+                    val userClass = document.getString("userClass")
+                    val userMajor = document.getString("userMajor")
+
+                    // Save the data locally
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean(KEY_IS_LOGGED_IN, true)
+                    editor.putString(KEY_USER_FIRST_NAME, firstName)
+                    editor.putString(KEY_USER_LAST_NAME, lastName)
+                    editor.putString(KEY_USER_PHONE, phoneNumber)
+                    editor.putString(KEY_USER_CLASS, userClass)
+                    editor.putString(KEY_USER_MAJOR, userMajor)
+                    editor.apply()
+
+                    // Navigate to MainActivity
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                } else {
+                    // Handle the case where user data is not found
+                    Toast.makeText(this, "User data not found.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to retrieve user data.", Toast.LENGTH_SHORT).show()
+            }
     }
 }

@@ -76,8 +76,8 @@ class VerificationPendingActivity : AppCompatActivity() {
                         val user = auth.currentUser
                         if (user != null && user.isEmailVerified) {
                             Toast.makeText(this@VerificationPendingActivity, "Email verified!", Toast.LENGTH_SHORT).show()
-                            // Move to LoginActivity
-                            val intent = Intent(this@VerificationPendingActivity, LoginActivity::class.java)
+                            // Move to UserInfoActivity
+                            val intent = Intent(this@VerificationPendingActivity, UserInfoActivity::class.java)
                             startActivity(intent)
                             finish()
                         } else {
