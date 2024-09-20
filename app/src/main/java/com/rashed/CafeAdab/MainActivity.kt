@@ -3,9 +3,12 @@ package com.rashed.CafeAdab
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -13,12 +16,16 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
+        // Setup toolbar and drawer
+
+        // Set window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -31,11 +38,8 @@ class MainActivity : AppCompatActivity() {
         // Get the TextView from the layout
         val userInfoTextView = findViewById<TextView>(R.id.userInfoTextView)
 
-        // Fetch and display user data
-        fetchAndDisplayUserInfo(userInfoTextView)
-    }
 
-    private fun fetchAndDisplayUserInfo(userInfoTextView: TextView) {
+    fun fetchAndDisplayUserInfo(userInfoTextView: TextView) {
         val uid = auth.currentUser?.uid
 
         if (uid != null) {
@@ -66,4 +70,4 @@ class MainActivity : AppCompatActivity() {
             userInfoTextView.text = "User not logged in!"
         }
     }
-}
+}}
