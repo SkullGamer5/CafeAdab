@@ -2,6 +2,7 @@ package com.rashed.CafeAdab
 
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
@@ -23,51 +24,27 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // Setup toolbar and drawer
-
-        // Set window insets
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance("https://cafeadab-6b721-default-rtdb.europe-west1.firebasedatabase.app")
 
         // Get the TextView from the layout
         val userInfoTextView = findViewById<TextView>(R.id.userInfoTextView)
 
+        drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
-    fun fetchAndDisplayUserInfo(userInfoTextView: TextView) {
-        val uid = auth.currentUser?.uid
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-        if (uid != null) {
-            val userRef = database.getReference("users/$uid")
-            userRef.get().addOnSuccessListener { snapshot ->
-                if (snapshot.exists()) {
-                    val firstName = snapshot.child("firstName").getValue(String::class.java)
-                    val lastName = snapshot.child("lastName").getValue(String::class.java)
-                    val phone = snapshot.child("phone").getValue(String::class.java)
-                    val paye = snapshot.child("paye").getValue(String::class.java)
-                    val reshte = snapshot.child("reshte").getValue(String::class.java)
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
 
-                    // Display user info in the TextView
-                    val userInfo = "First Name: $firstName\n" +
-                            "Last Name: $lastName\n" +
-                            "Phone: $phone\n" +
-                            "Paye: $paye\n" +
-                            "Reshte: $reshte"
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
 
-                    userInfoTextView.text = userInfo
-                } else {
-                    userInfoTextView.text = "User data not found."
-                }
-            }.addOnFailureListener { exception ->
-                userInfoTextView.text = "Failed to load user data: ${exception.message}"
-            }
-        } else {
-            userInfoTextView.text = "User not logged in!"
+        if (savedInstanceState == null){
+            supportFragmentManager.beginTransaction()
         }
+
     }
-}}
+}

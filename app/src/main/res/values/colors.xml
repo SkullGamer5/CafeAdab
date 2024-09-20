@@ -12,5 +12,6 @@
     <color name="green_500">#4CAF50</color> <!-- Medium green -->
     <color name="green_700">#388E3C</color> <!-- Darker green -->
     <color name="green_900">#1B5E20</color> <!-- Even darker green -->
+    <color name="lavender">#1bb273</color>
 
 </resources>
