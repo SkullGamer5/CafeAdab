@@ -6,19 +6,19 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="nav_home"
+            android:id="@+id/nav_home"
             android:icon="@drawable/home_icon"
             android:title="Home"
             tools:ignore="HardcodedText"/>
 
         <item
-            android:id="nav_settings"
+            android:id="@+id/nav_settings"
             android:icon="@drawable/settings_icon"
             android:title="Settings"
             tools:ignore="HardcodedText"/>
 
         <item
-            android:id="nav_about"
+            android:id="@+id/nav_about"
             android:icon="@drawable/info_icon"
             android:title="About Us"
             tools:ignore="HardcodedText"/>
